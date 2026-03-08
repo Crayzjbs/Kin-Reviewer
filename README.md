@@ -58,7 +58,8 @@ Monitor your statistics on the dashboard to see your progress over time.
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
 - **Icons**: Lucide React
-- **Storage**: LocalStorage (client-side)
+- **Database**: Supabase (PostgreSQL)
+- **Storage**: Supabase with free tier protection
 
 ## Project Structure
 
