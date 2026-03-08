@@ -64,7 +64,10 @@ export default function SelectTopicPage() {
           
           {loading ? (
             <div className="text-center py-12 glass-card rounded-xl">
-              <p className="text-slate-400">Loading topics...</p>
+              <div className="flex items-center justify-center gap-2">
+                <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+                <p className="text-slate-400">Loading topics from database...</p>
+              </div>
             </div>
           ) : topics.length === 0 ? (
             <div className="text-center py-12 glass-card rounded-xl">
