@@ -7,8 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview"
+    "pages:build": "npx @opennextjs/cloudflare@latest build",
+    "pages:deploy": "npx wrangler@latest deploy",
+    "pages:dev": "npx wrangler@latest dev",
+    "deploy": "npm run pages:build && npm run pages:deploy",
+    "preview": "npm run pages:build && npm run pages:dev"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.98.0",
