@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { ArrowLeft, CheckCircle, XCircle, Lightbulb } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -12,7 +12,7 @@ import { generateId } from '@/lib/utils';
 import { initializeReviewCards } from '@/lib/init-review-cards';
 import { generateEnhancedExplanation, generateHumanAnalogy } from '@/lib/explanation-generator';
 
-export default function ReviewPage() {
+function ReviewContent() {
   const searchParams = useSearchParams();
   const topicId = searchParams.get('topic');
   
@@ -402,5 +402,17 @@ export default function ReviewPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ReviewPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-slate-400">Loading review...</div>
+      </div>
+    }>
+      <ReviewContent />
+    </Suspense>
   );
 }
