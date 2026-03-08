@@ -4,12 +4,11 @@ import { useState, useEffect, Suspense } from 'react';
 import { ArrowLeft, CheckCircle, XCircle, Lightbulb } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { storage } from '@/lib/storage';
-import { ReviewCard, ReviewRating, Analogy } from '@/lib/types';
+import { supabaseStorage } from '@/lib/supabase-storage';
+import { ReviewCard, ReviewRating, Analogy, Question } from '@/lib/types';
 import { getDueCards, calculateNextReview } from '@/lib/spaced-repetition';
 import { generateAnalogy } from '@/lib/analogy-generator';
 import { generateId } from '@/lib/utils';
-import { initializeReviewCards } from '@/lib/init-review-cards';
 import { generateEnhancedExplanation, generateHumanAnalogy } from '@/lib/explanation-generator';
 
 function ReviewContent() {
@@ -26,23 +25,61 @@ function ReviewContent() {
   const [enhancedExplanation, setEnhancedExplanation] = useState<string>('');
   const [humanAnalogy, setHumanAnalogy] = useState<string>('');
   const [topicName, setTopicName] = useState<string>('All Topics');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    initializeReviewCards();
-    const cards = storage.getReviewCards();
-    
-    let filteredCards = cards;
-    if (topicId) {
-      filteredCards = cards.filter(card => card.question.topicId === topicId);
-      const topics = storage.getTopics();
-      const topic = topics.find(t => t.id === topicId);
-      if (topic) {
-        setTopicName(topic.name);
+    async function loadReviewCards() {
+      try {
+        const [questions, existingCards, topics] = await Promise.all([
+          supabaseStorage.getQuestions(),
+          supabaseStorage.getReviewCards(),
+          supabaseStorage.getTopics()
+        ]);
+
+        let filteredQuestions = questions;
+        if (topicId) {
+          filteredQuestions = questions.filter(q => q.topicId === topicId);
+          const topic = topics.find(t => t.id === topicId);
+          if (topic) {
+            setTopicName(topic.name);
+          }
+        }
+
+        const existingQuestionIds = new Set(existingCards.map(card => card.questionId));
+        
+        const newCards: ReviewCard[] = filteredQuestions
+          .filter(q => !existingQuestionIds.has(q.id))
+          .map(question => ({
+            id: generateId(),
+            questionId: question.id,
+            question: question,
+            nextReview: new Date(),
+            interval: 0,
+            easeFactor: 2.5,
+            repetitions: 0,
+          }));
+
+        const allCards = [...existingCards, ...newCards];
+        
+        if (newCards.length > 0) {
+          await supabaseStorage.saveReviewCards(allCards);
+        }
+
+        let filteredCards = allCards;
+        if (topicId) {
+          filteredCards = allCards.filter(card => card.question.topicId === topicId);
+        }
+        
+        const due = getDueCards(filteredCards);
+        setDueCards(due);
+      } catch (error) {
+        console.error('Failed to load review cards:', error);
+      } finally {
+        setLoading(false);
       }
     }
-    
-    const due = getDueCards(filteredCards);
-    setDueCards(due);
+
+    loadReviewCards();
   }, [topicId]);
 
   const currentCard = dueCards[currentIndex];
@@ -103,21 +140,22 @@ function ReviewContent() {
           createdAt: new Date(),
         };
         
-        const analogies = storage.getAnalogies();
-        storage.saveAnalogies([...analogies, newAnalogy]);
+        supabaseStorage.getAnalogies().then(analogies => {
+          supabaseStorage.saveAnalogies([...analogies, newAnalogy]);
+        });
       });
     }
   };
 
-  const handleRating = (rating: ReviewRating) => {
+  const handleRating = async (rating: ReviewRating) => {
     if (!currentCard) return;
 
     const updates = calculateNextReview(currentCard, rating);
-    const allCards = storage.getReviewCards();
-    const updatedCards = allCards.map(card =>
+    const allCards = await supabaseStorage.getReviewCards();
+    const updatedCards = allCards.map((card: ReviewCard) =>
       card.id === currentCard.id ? { ...card, ...updates } : card
     );
-    storage.saveReviewCards(updatedCards);
+    await supabaseStorage.saveReviewCards(updatedCards);
 
     setShowAnswer(false);
     setUserAnswer('');
@@ -135,6 +173,18 @@ function ReviewContent() {
       setCurrentIndex(0);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white dark:bg-black p-6">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center py-12">
+            <p className="text-slate-400">Loading review cards...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!currentCard || dueCards.length === 0) {
     return (
