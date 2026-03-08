@@ -2,7 +2,11 @@
 
 import { useEffect, useRef } from 'react';
 
-export default function StarfieldBackground() {
+interface StarfieldBackgroundProps {
+  opacity?: number;
+}
+
+export default function StarfieldBackground({ opacity = 1 }: StarfieldBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -83,7 +87,10 @@ export default function StarfieldBackground() {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 -z-10"
-      style={{ background: 'linear-gradient(to bottom, #030712, #0f172a)' }}
+      style={{ 
+        background: 'linear-gradient(to bottom, #030712, #0f172a)',
+        opacity: opacity
+      }}
     />
   );
 }
