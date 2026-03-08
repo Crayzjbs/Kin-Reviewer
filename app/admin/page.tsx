@@ -3,7 +3,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Upload, CheckCircle, XCircle } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { createClient } from '@supabase/supabase-js';
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
 
 interface ImportQuestion {
   id: number;
@@ -25,6 +28,20 @@ export default function AdminPage() {
   const [result, setResult] = useState<{ success: number; errors: string[] } | null>(null);
 
   const handleImport = async () => {
+    // Initialize Supabase client
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+    
+    if (!supabaseUrl || !supabaseAnonKey) {
+      setResult({
+        success: 0,
+        errors: ['Supabase credentials not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY'],
+      });
+      return;
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    
     if (!jsonData.trim()) {
       setResult({
         success: 0,
