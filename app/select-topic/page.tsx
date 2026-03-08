@@ -4,16 +4,26 @@ import { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { storage } from '@/lib/storage';
+import { supabaseStorage } from '@/lib/supabase-storage';
 import { Topic } from '@/lib/types';
 
 export default function SelectTopicPage() {
   const [topics, setTopics] = useState<Topic[]>([]);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    const allTopics = storage.getTopics();
-    setTopics(allTopics);
+    async function loadTopics() {
+      try {
+        const allTopics = await supabaseStorage.getTopics();
+        setTopics(allTopics);
+      } catch (error) {
+        console.error('Failed to load topics:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadTopics();
   }, []);
 
   const handleTopicSelect = (topicId: string) => {
@@ -52,7 +62,11 @@ export default function SelectTopicPage() {
         <div className="space-y-3">
           <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-4">By Topic</h2>
           
-          {topics.length === 0 ? (
+          {loading ? (
+            <div className="text-center py-12 glass-card rounded-xl">
+              <p className="text-slate-400">Loading topics...</p>
+            </div>
+          ) : topics.length === 0 ? (
             <div className="text-center py-12 glass-card rounded-xl">
               <p className="text-slate-400">No topics available. Import questions to get started.</p>
               <Link href="/import" className="text-blue-400 hover:text-blue-300 mt-2 inline-block smooth-transition">
