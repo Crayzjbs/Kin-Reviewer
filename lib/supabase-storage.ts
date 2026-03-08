@@ -1,5 +1,6 @@
 import { Topic, Question, AnswerKey, ReviewCard, Analogy } from './types';
 import { supabase } from './supabase';
+import { validateBeforeSave } from './supabase-limits';
 
 export const supabaseStorage = {
   async getTopics(): Promise<Topic[]> {
@@ -16,6 +17,11 @@ export const supabaseStorage = {
   },
 
   async saveTopics(topics: Topic[]): Promise<void> {
+    const validation = await validateBeforeSave('save topics');
+    if (!validation.canProceed) {
+      throw new Error(validation.message || 'Cannot save: Storage limit reached');
+    }
+
     const dbTopics = topics.map(t => ({
       id: t.id,
       name: t.name,
@@ -52,6 +58,11 @@ export const supabaseStorage = {
   },
 
   async saveQuestions(questions: Question[]): Promise<void> {
+    const validation = await validateBeforeSave('save questions');
+    if (!validation.canProceed) {
+      throw new Error(validation.message || 'Cannot save: Storage limit reached');
+    }
+
     const dbQuestions = questions.map(q => ({
       id: q.id,
       topic_id: q.topicId,
@@ -107,6 +118,11 @@ export const supabaseStorage = {
   },
 
   async saveReviewCards(cards: ReviewCard[]): Promise<void> {
+    const validation = await validateBeforeSave('save review cards');
+    if (!validation.canProceed) {
+      throw new Error(validation.message || 'Cannot save: Storage limit reached');
+    }
+
     const dbCards = cards.map(c => ({
       id: c.id,
       question_id: c.questionId,
@@ -143,6 +159,11 @@ export const supabaseStorage = {
   },
 
   async saveAnalogies(analogies: Analogy[]): Promise<void> {
+    const validation = await validateBeforeSave('save analogies');
+    if (!validation.canProceed) {
+      throw new Error(validation.message || 'Cannot save: Storage limit reached');
+    }
+
     const dbAnalogies = analogies.map(a => ({
       id: a.id,
       question_id: a.questionId,
@@ -177,6 +198,11 @@ export const supabaseStorage = {
   },
 
   async saveAnswerKeys(keys: AnswerKey[]): Promise<void> {
+    const validation = await validateBeforeSave('save answer keys');
+    if (!validation.canProceed) {
+      throw new Error(validation.message || 'Cannot save: Storage limit reached');
+    }
+
     const dbKeys = keys.map(k => ({
       id: k.id,
       topic_id: k.topicId,
