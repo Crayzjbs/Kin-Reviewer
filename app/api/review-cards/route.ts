@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
-import { supabaseServer } from '@/lib/supabase-server';
+import { getSupabaseServer } from '@/lib/supabase-server';
 
 export async function GET() {
   try {
-    const { data, error } = await supabaseServer
+    const supabase = getSupabaseServer();
+    const { data, error } = await supabase
       .from('review_cards')
       .select(`
         *,
@@ -56,7 +57,8 @@ export async function POST(request: Request) {
       last_reviewed: c.lastReviewed
     }));
 
-    const { error } = await supabaseServer
+    const supabase = getSupabaseServer();
+    const { error } = await supabase
       .from('review_cards')
       .upsert(dbCards);
     

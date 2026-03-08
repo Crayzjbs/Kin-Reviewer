@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
-import { supabaseServer } from '@/lib/supabase-server';
+import { getSupabaseServer } from '@/lib/supabase-server';
 
 export async function GET() {
   try {
-    const { data, error } = await supabaseServer
+    const supabase = getSupabaseServer();
+    const { data, error } = await supabase
       .from('analogies')
       .select('*')
       .order('created_at', { ascending: false });
@@ -41,7 +42,8 @@ export async function POST(request: Request) {
       created_at: a.createdAt
     }));
 
-    const { error } = await supabaseServer
+    const supabase = getSupabaseServer();
+    const { error } = await supabase
       .from('analogies')
       .upsert(dbAnalogies);
     

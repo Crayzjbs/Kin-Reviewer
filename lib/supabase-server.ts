@@ -1,7 +1,19 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-// Server-side only - keys are NOT exposed to browser
-const supabaseUrl = process.env.SUPABASE_URL || '';
-const supabaseKey = process.env.SUPABASE_ANON_KEY || '';
+let supabaseServerInstance: SupabaseClient | null = null;
 
-export const supabaseServer = createClient(supabaseUrl, supabaseKey);
+// Lazy initialization - only create client when actually used (not at build time)
+export const getSupabaseServer = () => {
+  if (!supabaseServerInstance) {
+    const supabaseUrl = process.env.SUPABASE_URL || '';
+    const supabaseKey = process.env.SUPABASE_ANON_KEY || '';
+    
+    if (!supabaseUrl || !supabaseKey) {
+      throw new Error('Missing Supabase environment variables');
+    }
+    
+    supabaseServerInstance = createClient(supabaseUrl, supabaseKey);
+  }
+  
+  return supabaseServerInstance;
+};
