@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "import-standards": "tsx scripts/import-standards-code-reviewer.ts"
+    "import-standards": "tsx scripts/import-standards-code-reviewer.ts",
+    "upgrade-difficulty": "tsx scripts/upgrade-question-difficulty.ts",
+    "import-upgraded": "tsx scripts/import-upgraded-questions.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.98.0",
