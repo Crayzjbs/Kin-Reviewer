@@ -27,12 +27,14 @@ function ReviewContent() {
   const [topicName, setTopicName] = useState<string>('All Topics');
   const [loading, setLoading] = useState(true);
   const [showTimerSelection, setShowTimerSelection] = useState(true);
-  const [timerDuration, setTimerDuration] = useState<number>(0);
+  const [timerPerQuestion, setTimerPerQuestion] = useState<number>(0);
   const [timeRemaining, setTimeRemaining] = useState<number>(0);
   const [timerActive, setTimerActive] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
   const [incorrectCount, setIncorrectCount] = useState(0);
   const [totalAnswered, setTotalAnswered] = useState(0);
+  const [showCustomInput, setShowCustomInput] = useState(false);
+  const [customSeconds, setCustomSeconds] = useState<string>('');
 
   useEffect(() => {
     async function loadReviewCards() {
@@ -104,11 +106,25 @@ function ReviewContent() {
     }
   }, [timerActive, timeRemaining]);
 
-  const startQuiz = (minutes: number) => {
-    setTimerDuration(minutes);
-    setTimeRemaining(minutes * 60);
-    setTimerActive(minutes > 0);
+  const startQuiz = (seconds: number) => {
+    setTimerPerQuestion(seconds);
+    setTimeRemaining(seconds);
+    setTimerActive(seconds > 0);
     setShowTimerSelection(false);
+  };
+
+  const startCustomTimer = () => {
+    const seconds = parseInt(customSeconds);
+    if (seconds > 0) {
+      startQuiz(seconds);
+    }
+  };
+
+  const resetQuestionTimer = () => {
+    if (timerPerQuestion > 0) {
+      setTimeRemaining(timerPerQuestion);
+      setTimerActive(true);
+    }
   };
 
   const formatTime = (seconds: number) => {
@@ -215,6 +231,8 @@ function ReviewContent() {
       setDueCards(newDue);
       setCurrentIndex(0);
     }
+    
+    resetQuestionTimer();
   };
 
   if (loading) {
@@ -242,10 +260,10 @@ function ReviewContent() {
           
           <div className="bg-gray-50 dark:bg-gray-900 rounded-3xl p-10 border border-gray-200 dark:border-gray-800">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-6 text-center">
-              How long do you want to study?
+              Time per question?
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-8 text-center">
-              Select a time limit or choose no timer
+              Select how much time you want for each question
             </p>
             
             <div className="grid grid-cols-2 gap-4 mb-6">
@@ -254,7 +272,7 @@ function ReviewContent() {
                 className="bg-white dark:bg-black border-2 border-gray-200 dark:border-gray-800 hover:border-blue-500 dark:hover:border-blue-500 rounded-2xl p-6 smooth-transition group"
               >
                 <div className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">15</div>
-                <div className="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400">minutes</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400">seconds</div>
               </button>
               
               <button
@@ -262,25 +280,59 @@ function ReviewContent() {
                 className="bg-white dark:bg-black border-2 border-gray-200 dark:border-gray-800 hover:border-blue-500 dark:hover:border-blue-500 rounded-2xl p-6 smooth-transition group"
               >
                 <div className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">30</div>
-                <div className="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400">minutes</div>
-              </button>
-              
-              <button
-                onClick={() => startQuiz(45)}
-                className="bg-white dark:bg-black border-2 border-gray-200 dark:border-gray-800 hover:border-blue-500 dark:hover:border-blue-500 rounded-2xl p-6 smooth-transition group"
-              >
-                <div className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">45</div>
-                <div className="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400">minutes</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400">seconds</div>
               </button>
               
               <button
                 onClick={() => startQuiz(60)}
                 className="bg-white dark:bg-black border-2 border-gray-200 dark:border-gray-800 hover:border-blue-500 dark:hover:border-blue-500 rounded-2xl p-6 smooth-transition group"
               >
-                <div className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">60</div>
+                <div className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">1</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400">minute</div>
+              </button>
+              
+              <button
+                onClick={() => startQuiz(120)}
+                className="bg-white dark:bg-black border-2 border-gray-200 dark:border-gray-800 hover:border-blue-500 dark:hover:border-blue-500 rounded-2xl p-6 smooth-transition group"
+              >
+                <div className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">2</div>
                 <div className="text-sm text-gray-500 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400">minutes</div>
               </button>
             </div>
+            
+            {!showCustomInput ? (
+              <button
+                onClick={() => setShowCustomInput(true)}
+                className="w-full bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 px-6 py-4 rounded-2xl smooth-transition font-medium mb-4"
+              >
+                Custom Time
+              </button>
+            ) : (
+              <div className="mb-4">
+                <div className="flex gap-2">
+                  <input
+                    type="number"
+                    value={customSeconds}
+                    onChange={(e) => setCustomSeconds(e.target.value)}
+                    placeholder="Seconds"
+                    className="flex-1 px-4 py-3 border-2 border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-black text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-500"
+                    min="1"
+                  />
+                  <button
+                    onClick={startCustomTimer}
+                    className="px-6 py-3 bg-blue-600 dark:bg-blue-500 hover:opacity-90 text-white rounded-xl smooth-transition font-medium"
+                  >
+                    Start
+                  </button>
+                </div>
+                <button
+                  onClick={() => setShowCustomInput(false)}
+                  className="w-full mt-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
             
             <button
               onClick={() => startQuiz(0)}
@@ -332,11 +384,11 @@ function ReviewContent() {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            {timerDuration > 0 && (
+            {timerPerQuestion > 0 && (
               <div className={`px-4 py-2 rounded-xl font-mono text-lg font-semibold ${
-                timeRemaining < 60 ? 'bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900' : 'bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900'
+                timeRemaining < 10 ? 'bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900' : 'bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900'
               }`}>
-                {formatTime(timeRemaining)}
+                {timeRemaining}s
               </div>
             )}
             <div className="bg-gray-50 dark:bg-gray-900 rounded-xl px-4 py-2 border border-gray-200 dark:border-gray-800">
