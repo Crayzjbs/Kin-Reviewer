@@ -20,6 +20,7 @@ export default function TopicsPage() {
     e.preventDefault();
     const newTopic: Topic = {
       id: generateId(),
+      subjectId: 'architecture',
       name: formData.name,
       description: formData.description,
       createdAt: new Date(),

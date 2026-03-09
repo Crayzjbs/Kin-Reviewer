@@ -39,6 +39,7 @@ export function importQuestionsFromJSON(jsonData: string, overrideTopicName?: st
       if (!topicId) {
         const newTopic: Topic = {
           id: generateId(),
+          subjectId: 'architecture',
           name: topicNameToUse,
           description: overrideTopicName ? `${overrideTopicName} questions` : `CCNA ${data.topic} questions`,
           createdAt: new Date(),
