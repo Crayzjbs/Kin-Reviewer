@@ -39,6 +39,25 @@ async function importStandardsCodeReviewer() {
 
   const topicIdMap: { [key: string]: string } = {};
 
+  console.log('\n--- Ensuring Architecture Subject Exists ---');
+  const architectureSubject = {
+    id: 'architecture',
+    name: 'Architecture',
+    description: 'Philippine Architecture Licensure Examination topics covering standards, codes, and professional practice',
+    icon: '🏛️',
+    created_at: new Date().toISOString()
+  };
+
+  const { error: subjectError } = await supabase
+    .from('subjects')
+    .upsert(architectureSubject);
+
+  if (subjectError) {
+    console.error('Error inserting Architecture subject:', subjectError);
+  } else {
+    console.log('✓ Architecture subject ready');
+  }
+
   console.log('\n--- Inserting Topics ---');
   for (const topicName of uniqueTopics) {
     const topicId = `standards-code-reviewer-${topicName.toLowerCase().replace(/\s+/g, '-').replace(/&/g, 'and')}`;
@@ -46,6 +65,7 @@ async function importStandardsCodeReviewer() {
 
     const topic = {
       id: topicId,
+      subject_id: 'architecture',
       name: `Standards Code Reviewer - ${topicName}`,
       description: `Questions from Standards Code Reviewer exam covering ${topicName}`,
       created_at: new Date().toISOString()

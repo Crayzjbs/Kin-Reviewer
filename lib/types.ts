@@ -1,5 +1,14 @@
+export interface Subject {
+  id: string;
+  name: string;
+  description: string;
+  icon?: string;
+  createdAt: Date;
+}
+
 export interface Topic {
   id: string;
+  subjectId: string;
   name: string;
   description: string;
   createdAt: Date;

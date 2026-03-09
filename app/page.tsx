@@ -45,7 +45,7 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
           <Link
-            href="/select-topic"
+            href="/select-subject"
             className="group relative glass-card rounded-2xl p-8 smooth-transition hover:scale-[1.02] glow-border overflow-hidden md:col-span-2"
           >
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 opacity-50 group-hover:opacity-100 smooth-transition"></div>

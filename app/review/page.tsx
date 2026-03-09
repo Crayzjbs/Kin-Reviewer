@@ -363,6 +363,11 @@ function ReviewContent() {
                     {isCorrect ? 'Correct' : 'Incorrect'}
                   </span>
                 </div>
+                {!isCorrect && (
+                  <p className="text-sm text-pink-600 dark:text-pink-400 mb-3 font-medium italic">
+                    It's okay love ko! Kaya yan, lovelove kin&lt;33
+                  </p>
+                )}
                 <p className="text-sm text-gray-900 dark:text-gray-100 mb-2 font-light">
                   <span className="font-medium">Your answer:</span> {userAnswer}
                 </p>

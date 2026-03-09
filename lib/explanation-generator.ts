@@ -17,24 +17,36 @@ export async function generateHumanAnalogy(
   correctAnswer: string,
   originalExplanation?: string
 ): Promise<string> {
-  const analogies: { [key: string]: string } = {
-    'lldp': "Think of LLDP like a universal translator at a United Nations meeting. While CDP (Cisco Discovery Protocol) is like Cisco employees speaking their own company language, LLDP is the common language that everyone from different vendors (like different countries) can understand. When you need devices from multiple manufacturers to communicate and discover each other, you use LLDP - the universal language of network discovery.",
-    
-    'cpu acl': "A CPU ACL is like a VIP security checkpoint at a concert venue. While regular ACLs control traffic between different sections of the venue (network segments), a CPU ACL specifically protects the backstage area (the device's management processor). It decides which management traffic can reach the 'brain' of the device, preventing unauthorized access to critical control functions.",
-    
-    'ipsec': "IPsec is like an armored truck for your data. While IKE (Internet Key Exchange) is the security team that negotiates and sets up the protection plan, IPsec is the actual armored vehicle that transports your valuable cargo (user data) safely through dangerous territory (the internet). IKE sets up the security, but IPsec does the heavy lifting of protecting your data in transit.",
-    
-    'default': "Think of this networking concept like organizing a large office building. Just as you need clear rules and systems to manage how people, information, and resources flow through the building, networks need protocols and configurations to manage how data flows between devices. The correct answer represents the most efficient or secure way to set up this 'office building' for optimal operation."
-  };
-
-  const lowerQuestion = question.toLowerCase();
-  const lowerAnswer = correctAnswer.toLowerCase();
+  const questionHash = `${question}-${correctAnswer}`.toLowerCase();
   
-  for (const [key, analogy] of Object.entries(analogies)) {
-    if (lowerQuestion.includes(key) || lowerAnswer.includes(key)) {
-      return analogy;
-    }
+  const architectureAnalogies = [
+    "building a house",
+    "organizing a kitchen",
+    "planning a road trip",
+    "managing a restaurant",
+    "running a coffee shop",
+    "designing a garden",
+    "arranging furniture in a room",
+    "packing a suitcase",
+    "organizing a closet",
+    "setting up a home office"
+  ];
+  
+  const randomAnalogy = architectureAnalogies[Math.abs(hashCode(questionHash)) % architectureAnalogies.length];
+  
+  if (originalExplanation) {
+    return `Think of this like ${randomAnalogy}: ${originalExplanation} Just as you need to follow proper steps and standards when ${randomAnalogy}, the same principle applies here - the correct answer (${correctAnswer}) represents the proper standard or method that ensures everything works correctly and safely.`;
   }
   
-  return analogies.default;
+  return `Imagine ${randomAnalogy} - you need to follow specific rules and standards to do it right. The answer "${correctAnswer}" is like following the building code or best practice that ensures everything is done properly. Just as you wouldn't skip important steps when ${randomAnalogy}, you can't skip this fundamental principle in architecture and construction.`;
+}
+
+function hashCode(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = ((hash << 5) - hash) + char;
+    hash = hash & hash;
+  }
+  return hash;
 }

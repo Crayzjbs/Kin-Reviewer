@@ -1,8 +1,45 @@
-import { Topic, Question, AnswerKey, ReviewCard, Analogy } from './types';
+import { Subject, Topic, Question, AnswerKey, ReviewCard, Analogy } from './types';
 import { supabase } from './supabase';
 import { validateBeforeSave } from './supabase-limits';
 
 export const supabaseStorage = {
+  async getSubjects(): Promise<Subject[]> {
+    const { data, error } = await supabase
+      .from('subjects')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) throw error;
+    return (data || []).map(s => ({
+      id: s.id,
+      name: s.name,
+      description: s.description,
+      icon: s.icon,
+      createdAt: new Date(s.created_at)
+    }));
+  },
+
+  async saveSubjects(subjects: Subject[]): Promise<void> {
+    const validation = await validateBeforeSave('save subjects');
+    if (!validation.canProceed) {
+      throw new Error(validation.message || 'Cannot save: Storage limit reached');
+    }
+
+    const dbSubjects = subjects.map(s => ({
+      id: s.id,
+      name: s.name,
+      description: s.description,
+      icon: s.icon,
+      created_at: s.createdAt.toISOString()
+    }));
+
+    const { error } = await supabase
+      .from('subjects')
+      .upsert(dbSubjects);
+    
+    if (error) throw error;
+  },
+
   async getTopics(): Promise<Topic[]> {
     const { data, error } = await supabase
       .from('topics')
@@ -11,7 +48,10 @@ export const supabaseStorage = {
     
     if (error) throw error;
     return (data || []).map(t => ({
-      ...t,
+      id: t.id,
+      subjectId: t.subject_id,
+      name: t.name,
+      description: t.description,
       createdAt: new Date(t.created_at)
     }));
   },
@@ -24,6 +64,7 @@ export const supabaseStorage = {
 
     const dbTopics = topics.map(t => ({
       id: t.id,
+      subject_id: t.subjectId,
       name: t.name,
       description: t.description,
       created_at: t.createdAt.toISOString()

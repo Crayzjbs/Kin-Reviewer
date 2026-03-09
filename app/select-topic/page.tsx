@@ -3,20 +3,38 @@
 import { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { supabaseStorage } from '@/lib/supabase-storage';
-import { Topic } from '@/lib/types';
+import { Topic, Subject } from '@/lib/types';
 
 export default function SelectTopicPage() {
   const [topics, setTopics] = useState<Topic[]>([]);
+  const [subject, setSubject] = useState<Subject | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const subjectId = searchParams.get('subject');
 
   useEffect(() => {
     async function loadTopics() {
       try {
-        const allTopics = await supabaseStorage.getTopics();
-        setTopics(allTopics);
+        if (!subjectId) {
+          router.push('/select-subject');
+          return;
+        }
+
+        const [allTopics, allSubjects] = await Promise.all([
+          supabaseStorage.getTopics(),
+          supabaseStorage.getSubjects()
+        ]);
+
+        const currentSubject = allSubjects.find(s => s.id === subjectId);
+        if (currentSubject) {
+          setSubject(currentSubject);
+        }
+
+        const filteredTopics = allTopics.filter(t => t.subjectId === subjectId);
+        setTopics(filteredTopics);
       } catch (error) {
         console.error('Failed to load topics:', error);
       } finally {
@@ -24,7 +42,7 @@ export default function SelectTopicPage() {
       }
     }
     loadTopics();
-  }, []);
+  }, [subjectId, router]);
 
   const handleTopicSelect = (topicId: string) => {
     router.push(`/review?topic=${topicId}`);
@@ -38,13 +56,19 @@ export default function SelectTopicPage() {
     <div className="min-h-screen relative">
       <div className="max-w-3xl mx-auto px-6 py-16">
         <div className="flex items-center gap-3 mb-12">
-          <Link href="/" className="text-slate-400 hover:text-white smooth-transition">
+          <Link href="/select-subject" className="text-slate-400 hover:text-white smooth-transition">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <h1 className="text-3xl font-semibold text-white">Select Topic</h1>
         </div>
 
         <div className="mb-8">
+          {subject && (
+            <div className="mb-4 flex items-center gap-2">
+              <span className="text-2xl">{subject.icon || '📚'}</span>
+              <span className="text-lg text-slate-300">{subject.name}</span>
+            </div>
+          )}
           <p className="text-slate-400 mb-6">Choose a topic to review, or review all topics together.</p>
           
           <button
