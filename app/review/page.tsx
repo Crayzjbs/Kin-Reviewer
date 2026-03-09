@@ -34,7 +34,8 @@ function ReviewContent() {
   const [incorrectCount, setIncorrectCount] = useState(0);
   const [totalAnswered, setTotalAnswered] = useState(0);
   const [showCustomInput, setShowCustomInput] = useState(false);
-  const [customSeconds, setCustomSeconds] = useState<string>('');
+  const [customMinutes, setCustomMinutes] = useState<string>('00');
+  const [customSeconds, setCustomSeconds] = useState<string>('00');
 
   useEffect(() => {
     async function loadReviewCards() {
@@ -114,9 +115,25 @@ function ReviewContent() {
   };
 
   const startCustomTimer = () => {
-    const seconds = parseInt(customSeconds);
-    if (seconds > 0) {
-      startQuiz(seconds);
+    const mins = parseInt(customMinutes) || 0;
+    const secs = parseInt(customSeconds) || 0;
+    const totalSeconds = (mins * 60) + secs;
+    if (totalSeconds > 0) {
+      startQuiz(totalSeconds);
+    }
+  };
+
+  const handleMinuteChange = (value: string) => {
+    const num = value.replace(/\D/g, '');
+    if (num.length <= 2) {
+      setCustomMinutes(num.padStart(2, '0'));
+    }
+  };
+
+  const handleSecondChange = (value: string) => {
+    const num = value.replace(/\D/g, '');
+    if (num.length <= 2 && parseInt(num || '0') < 60) {
+      setCustomSeconds(num.padStart(2, '0'));
     }
   };
 
@@ -309,25 +326,46 @@ function ReviewContent() {
               </button>
             ) : (
               <div className="mb-4">
-                <div className="flex gap-2">
-                  <input
-                    type="number"
-                    value={customSeconds}
-                    onChange={(e) => setCustomSeconds(e.target.value)}
-                    placeholder="Seconds"
-                    className="flex-1 px-4 py-3 border-2 border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-black text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-500"
-                    min="1"
-                  />
+                <div className="flex items-end gap-3">
+                  <div className="flex-1">
+                    <label className="block text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">
+                      Minutes
+                    </label>
+                    <input
+                      type="text"
+                      value={customMinutes}
+                      onChange={(e) => handleMinuteChange(e.target.value)}
+                      className="w-full px-4 py-3 text-center text-2xl font-mono font-bold border-2 border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-black text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-500"
+                      maxLength={2}
+                    />
+                  </div>
+                  <div className="text-2xl font-bold text-gray-400 pb-3">:</div>
+                  <div className="flex-1">
+                    <label className="block text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium">
+                      Seconds
+                    </label>
+                    <input
+                      type="text"
+                      value={customSeconds}
+                      onChange={(e) => handleSecondChange(e.target.value)}
+                      className="w-full px-4 py-3 text-center text-2xl font-mono font-bold border-2 border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-black text-gray-900 dark:text-gray-100 focus:outline-none focus:border-blue-500"
+                      maxLength={2}
+                    />
+                  </div>
                   <button
                     onClick={startCustomTimer}
-                    className="px-6 py-3 bg-blue-600 dark:bg-blue-500 hover:opacity-90 text-white rounded-xl smooth-transition font-medium"
+                    className="px-8 py-3 bg-blue-600 dark:bg-blue-500 hover:opacity-90 text-white rounded-xl smooth-transition font-medium"
                   >
                     Start
                   </button>
                 </div>
                 <button
-                  onClick={() => setShowCustomInput(false)}
-                  className="w-full mt-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
+                  onClick={() => {
+                    setShowCustomInput(false);
+                    setCustomMinutes('00');
+                    setCustomSeconds('00');
+                  }}
+                  className="w-full mt-3 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
                 >
                   Cancel
                 </button>
@@ -385,10 +423,38 @@ function ReviewContent() {
           </div>
           <div className="flex items-center gap-4">
             {timerPerQuestion > 0 && (
-              <div className={`px-4 py-2 rounded-xl font-mono text-lg font-semibold ${
-                timeRemaining < 10 ? 'bg-red-50 dark:bg-red-950 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900' : 'bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900'
-              }`}>
-                {timeRemaining}s
+              <div className="relative">
+                <svg className="w-20 h-20 transform -rotate-90">
+                  <circle
+                    cx="40"
+                    cy="40"
+                    r="34"
+                    stroke="currentColor"
+                    strokeWidth="6"
+                    fill="none"
+                    className="text-gray-200 dark:text-gray-800"
+                  />
+                  <circle
+                    cx="40"
+                    cy="40"
+                    r="34"
+                    stroke="currentColor"
+                    strokeWidth="6"
+                    fill="none"
+                    strokeDasharray={`${2 * Math.PI * 34}`}
+                    strokeDashoffset={`${2 * Math.PI * 34 * (1 - timeRemaining / timerPerQuestion)}`}
+                    className={timeRemaining < 10 ? 'text-red-500' : 'text-purple-500'}
+                    strokeLinecap="round"
+                    style={{ transition: 'stroke-dashoffset 1s linear' }}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className={`text-lg font-bold font-mono ${
+                    timeRemaining < 10 ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-gray-100'
+                  }`}>
+                    {Math.floor(timeRemaining / 60)}:{(timeRemaining % 60).toString().padStart(2, '0')}
+                  </span>
+                </div>
               </div>
             )}
             <div className="bg-gray-50 dark:bg-gray-900 rounded-xl px-4 py-2 border border-gray-200 dark:border-gray-800">
