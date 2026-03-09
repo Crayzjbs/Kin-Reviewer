@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { storage } from '@/lib/storage';
+import { supabaseStorage } from '@/lib/supabase-storage';
 import { Sparkles, Brain, Zap, BookOpen, FileQuestion, Key, Lightbulb, Upload } from 'lucide-react';
 
 export default function Home() {
@@ -13,15 +13,25 @@ export default function Home() {
   });
 
   useEffect(() => {
-    const topics = storage.getTopics();
-    const questions = storage.getQuestions();
-    const cards = storage.getReviewCards();
+    async function loadStats() {
+      try {
+        const [topics, questions, cards] = await Promise.all([
+          supabaseStorage.getTopics(),
+          supabaseStorage.getQuestions(),
+          supabaseStorage.getReviewCards()
+        ]);
 
-    setStats({
-      totalTopics: topics.length,
-      totalQuestions: questions.length,
-      totalReviews: cards.length,
-    });
+        setStats({
+          totalTopics: topics.length,
+          totalQuestions: questions.length,
+          totalReviews: cards.length,
+        });
+      } catch (error) {
+        console.error('Failed to load stats:', error);
+      }
+    }
+
+    loadStats();
   }, []);
 
   return (

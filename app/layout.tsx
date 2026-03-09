@@ -1,18 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import './globals.css';
-import { storage } from '@/lib/storage';
 import StarfieldBackground from '@/components/StarfieldBackground';
 import Footer from '@/components/Footer';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  
-  useEffect(() => {
-    storage.loadFromBackend();
-  }, []);
 
   // Reduce starfield opacity on non-home pages
   const isHomePage = pathname === '/';
