@@ -14,10 +14,14 @@ import gsap from 'gsap';
 import confetti from 'canvas-confetti';
 import Swal from 'sweetalert2';
 import { Howl } from 'howler';
+import { playSuccessSound, playErrorSound } from '@/lib/quiz-sounds';
 
 function ReviewContent() {
   const searchParams = useSearchParams();
   const topicId = searchParams.get('topic');
+  
+  const questionRef = useRef<HTMLDivElement>(null);
+  const answersRef = useRef<HTMLDivElement>(null);
   
   const [dueCards, setDueCards] = useState<ReviewCard[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -111,6 +115,25 @@ function ReviewContent() {
     }
   }, [timerActive, timeRemaining]);
 
+  useEffect(() => {
+    if (questionRef.current && !showAnswer) {
+      gsap.fromTo(questionRef.current,
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.4, ease: 'power2.out' }
+      );
+    }
+  }, [currentIndex, showAnswer]);
+
+  useEffect(() => {
+    if (answersRef.current && !showAnswer) {
+      const buttons = answersRef.current.querySelectorAll('button');
+      gsap.fromTo(buttons,
+        { y: 10, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.3, stagger: 0.08, ease: 'power2.out' }
+      );
+    }
+  }, [currentIndex, showAnswer]);
+
   const startQuiz = (seconds: number) => {
     setTimerPerQuestion(seconds);
     setTimeRemaining(seconds);
@@ -180,10 +203,41 @@ function ReviewContent() {
     setIsCorrect(correct);
     setShowAnswer(true);
     setTotalAnswered(totalAnswered + 1);
+    
     if (correct) {
       setCorrectCount(correctCount + 1);
+      
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#6C63FF', '#22C55E', '#FFD700']
+      });
+      
+      playSuccessSound();
+      
+      Swal.fire({
+        icon: 'success',
+        title: 'Correct! 🎉',
+        timer: 1500,
+        showConfirmButton: false,
+        background: '#ffffff',
+        color: '#1A1A2E',
+        iconColor: '#22C55E'
+      });
     } else {
       setIncorrectCount(incorrectCount + 1);
+      
+      playErrorSound();
+      
+      Swal.fire({
+        icon: 'error',
+        title: 'Not quite!',
+        text: `Correct answer: ${correctAnswer}`,
+        background: '#ffffff',
+        color: '#1A1A2E',
+        confirmButtonColor: '#6C63FF'
+      });
     }
 
     generateEnhancedExplanation(
@@ -248,9 +302,29 @@ function ReviewContent() {
     if (currentIndex < dueCards.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
-      const newDue = getDueCards(updatedCards);
-      setDueCards(newDue);
-      setCurrentIndex(0);
+      Swal.fire({
+        title: '🎊 Quiz Complete!',
+        html: `
+          <div class="text-lg">
+            <p class="mb-2">Final Score: <strong>${scorePercentage}%</strong></p>
+            <p class="text-green-600">✓ Correct: ${correctCount}</p>
+            <p class="text-red-600">✗ Incorrect: ${incorrectCount}</p>
+          </div>
+        `,
+        background: '#ffffff',
+        color: '#1A1A2E',
+        confirmButtonColor: '#6C63FF',
+        confirmButtonText: 'Review Again'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          const newDue = getDueCards(updatedCards);
+          setDueCards(newDue);
+          setCurrentIndex(0);
+          setCorrectCount(0);
+          setIncorrectCount(0);
+          setTotalAnswered(0);
+        }
+      });
     }
     
     resetQuestionTimer();
@@ -482,6 +556,21 @@ function ReviewContent() {
           </div>
         </div>
 
+        <div className="mb-6">
+          <div className="h-1.5 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-[#6C63FF] transition-all duration-500 ease-in-out"
+              style={{ width: `${(currentIndex / dueCards.length) * 100}%` }}
+            />
+          </div>
+          <div className="flex justify-between mt-2 text-sm text-gray-600 dark:text-gray-400">
+            <span>Question {currentIndex + 1} of {dueCards.length}</span>
+            <span className="font-medium">
+              {scorePercentage}% correct
+            </span>
+          </div>
+        </div>
+
         <div className="bg-gray-50 dark:bg-gray-900 rounded-3xl p-10 mb-6 border border-gray-200 dark:border-gray-800">
           <div className="flex items-center gap-2 mb-8">
             <span className="px-3 py-1.5 bg-white dark:bg-black text-gray-500 dark:text-gray-400 text-xs font-medium rounded-full border border-gray-200 dark:border-gray-800">
@@ -492,8 +581,8 @@ function ReviewContent() {
             </span>
           </div>
 
-          <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-gray-100 leading-relaxed whitespace-pre-line">
+          <div ref={questionRef} className="mb-8 font-['Sora']">
+            <h2 className="text-2xl font-medium text-gray-900 dark:text-gray-100 leading-relaxed whitespace-pre-line">
               {currentCard.question.question.split('\n').map((line, index) => (
                 <span key={index}>
                   {line}
@@ -506,16 +595,20 @@ function ReviewContent() {
           {currentCard.question.options && (
             <div className="mb-8">
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-3 font-medium">Options</p>
-              <div className="space-y-3">
+              <div ref={answersRef} className="space-y-3">
                 {currentCard.question.options.map((option, index) => {
                   const letter = String.fromCharCode(65 + index);
                   const correctAnswer = currentCard.question.correctAnswer || currentCard.question.answer;
                   const isSingleAnswer = correctAnswer.length === 1;
                   const isSelected = userAnswer.includes(option);
                   
+                  const isCorrectOption = showAnswer && correctAnswer.includes(letter);
+                  const isWrongSelection = showAnswer && isSelected && !isCorrectOption;
+                  
                   return (
                     <button
                       key={index}
+                      data-answer={option}
                       onClick={() => {
                         if (!showAnswer) {
                           if (isSingleAnswer) {
@@ -532,25 +625,33 @@ function ReviewContent() {
                         }
                       }}
                       disabled={showAnswer}
-                      className={`w-full text-left px-4 py-3 rounded-lg border smooth-transition ${
-                        showAnswer 
+                      className={`w-full text-left px-4 py-3 rounded-xl border-[1.5px] smooth-transition font-['Sora'] ${
+                        isCorrectOption
+                          ? 'bg-green-50 dark:bg-green-950 border-green-500 dark:border-green-600'
+                          : isWrongSelection
+                          ? 'bg-red-50 dark:bg-red-950 border-red-500 dark:border-red-600'
+                          : showAnswer 
                           ? 'cursor-default border-gray-200 dark:border-gray-800' 
                           : isSelected
-                          ? 'border-blue-600 bg-blue-50 dark:bg-blue-950 dark:border-blue-500'
-                          : 'border-gray-200 dark:border-gray-800 hover:border-blue-400 hover:bg-gray-50 dark:hover:bg-gray-900'
+                          ? 'border-[#6C63FF] bg-purple-50 dark:bg-purple-950 dark:border-purple-500'
+                          : 'border-gray-200 dark:border-gray-800 hover:border-[#6C63FF] hover:bg-gray-50 dark:hover:bg-gray-900 hover:shadow-md hover:-translate-y-0.5'
                       }`}
                     >
                       <div className="flex items-start gap-3">
                         <span className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-sm font-semibold ${
-                          showAnswer
+                          isCorrectOption
+                            ? 'bg-green-500 text-white'
+                            : isWrongSelection
+                            ? 'bg-red-500 text-white'
+                            : showAnswer
                             ? 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
                             : isSelected
-                            ? 'bg-blue-600 text-white'
+                            ? 'bg-[#6C63FF] text-white'
                             : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
                         }`}>
                           {letter}
                         </span>
-                        <span className="text-gray-900 dark:text-gray-100 font-light flex-1">
+                        <span className="text-gray-900 dark:text-gray-100 font-normal flex-1">
                           {option}
                         </span>
                       </div>
