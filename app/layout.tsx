@@ -3,29 +3,28 @@
 import { usePathname } from 'next/navigation';
 import './globals.css';
 import './swal-custom.css';
-import StarfieldBackground from '@/components/StarfieldBackground';
+import { ThemeProvider } from '@/lib/theme-context';
+import ThemeToggle from '@/components/ThemeToggle';
 import Footer from '@/components/Footer';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
-  // Reduce starfield opacity on non-home pages
-  const isHomePage = pathname === '/';
-  const starfieldOpacity = isHomePage ? 1 : 0.3;
-
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <head>
-        <title>Exam Anki - Smart Review System</title>
-        <meta name="description" content="Anki-style exam review with spaced repetition and AI-powered analogies" />
+        <title>Kin Reviewer - Smart Learning Platform</title>
+        <meta name="description" content="Premium spaced repetition learning with AI-powered insights" />
         <link rel="icon" href="/Logos/puzzle.png" type="image/png" />
       </head>
       <body className="antialiased min-h-screen flex flex-col">
-        <StarfieldBackground opacity={starfieldOpacity} />
-        <main className="flex-1">
-          {children}
-        </main>
-        <Footer />
+        <ThemeProvider>
+          <ThemeToggle />
+          <main className="flex-1">
+            {children}
+          </main>
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );

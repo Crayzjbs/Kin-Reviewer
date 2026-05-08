@@ -35,126 +35,145 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="min-h-screen relative">
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <header className="mb-20 text-center animate-float">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card mb-8">
-            <Sparkles className="w-4 h-4 text-blue-400" />
-            <span className="text-sm text-slate-300">AI-Powered Learning</span>
+    <div className="min-h-screen" style={{ background: 'var(--bg-primary)' }}>
+      <div className="max-w-6xl mx-auto px-6 py-20">
+        <header className="mb-16 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6" style={{ 
+            background: 'var(--bg-secondary)', 
+            border: '1px solid var(--border-primary)'
+          }}>
+            <Sparkles className="w-4 h-4" style={{ color: 'var(--apple-blue)' }} />
+            <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>AI-Powered Learning</span>
           </div>
-          <h1 className="text-7xl font-bold mb-6 tracking-tight">
-            <span className="glow-text">Kin Reviewer</span>
+          <h1 className="apple-title mb-4">
+            Kin Reviewer
           </h1>
-          <p className="text-xl text-slate-400 font-light max-w-2xl mx-auto leading-relaxed mb-3">
+          <p className="apple-body max-w-2xl mx-auto mb-2">
             Master your exams with spaced repetition and AI-powered learning
           </p>
-          <p className="text-sm text-slate-500 font-light">
+          <p className="apple-caption">
             by Kienth Justine Javines
           </p>
         </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <Link
             href="/select-subject"
-            className="group relative glass-card rounded-2xl p-8 smooth-transition hover:scale-[1.02] glow-border overflow-hidden md:col-span-2"
+            className="apple-card p-8 md:col-span-2 group"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 opacity-50 group-hover:opacity-100 smooth-transition"></div>
-            <div className="relative z-10">
-              <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-4 group-hover:scale-110 smooth-transition">
-                <Brain className="w-6 h-6 text-blue-400" />
+            <div className="flex items-start gap-4">
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center group-hover:scale-110 smooth-transition" style={{
+                background: 'linear-gradient(135deg, var(--apple-blue) 0%, #0051D5 100%)'
+              }}>
+                <Brain className="w-7 h-7 text-white" />
               </div>
-              <h2 className="text-2xl font-bold text-white mb-2">
-                Start Review
-              </h2>
-              <p className="text-slate-400 font-light">
-                Review your due cards using spaced repetition algorithm. Track your progress and master your topics efficiently.
-              </p>
+              <div className="flex-1">
+                <h2 className="apple-subtitle mb-2">
+                  Start Review
+                </h2>
+                <p className="apple-body">
+                  Review your due cards using spaced repetition algorithm. Track your progress and master your topics efficiently.
+                </p>
+              </div>
             </div>
           </Link>
 
-          <div className="glass-card p-8 rounded-2xl hover:scale-[1.02] smooth-transition group">
-            <div className="text-4xl font-bold mb-2 glow-text">
+          <div className="apple-card p-8 group">
+            <div className="text-5xl font-bold mb-3" style={{ color: 'var(--apple-blue)' }}>
               {stats.totalTopics}
             </div>
-            <div className="text-sm text-slate-400 font-medium tracking-wide uppercase mb-3">Topics</div>
-            <p className="text-xs text-slate-500 leading-relaxed">
+            <div className="apple-caption uppercase tracking-wider mb-2">Topics</div>
+            <p className="apple-caption">
               Organized learning materials
             </p>
-            <div className="mt-4 h-1 w-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full group-hover:w-full smooth-transition"></div>
+            <div className="mt-4 h-1 w-12 rounded-full group-hover:w-full smooth-transition" style={{
+              background: 'var(--apple-blue)'
+            }}></div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
-          <div className="glass-card p-8 rounded-2xl hover:scale-[1.02] smooth-transition group">
-            <div className="text-4xl font-bold mb-2 glow-text">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="apple-card p-8 group">
+            <div className="text-5xl font-bold mb-3" style={{ color: 'var(--apple-purple)' }}>
               {stats.totalQuestions}
             </div>
-            <div className="text-sm text-slate-400 font-medium tracking-wide uppercase mb-3">Questions</div>
-            <p className="text-xs text-slate-500 leading-relaxed">
+            <div className="apple-caption uppercase tracking-wider mb-2">Questions</div>
+            <p className="apple-caption">
               Practice questions ready
             </p>
-            <div className="mt-4 h-1 w-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full group-hover:w-full smooth-transition"></div>
+            <div className="mt-4 h-1 w-12 rounded-full group-hover:w-full smooth-transition" style={{
+              background: 'var(--apple-purple)'
+            }}></div>
           </div>
 
           <Link
             href="/generate"
-            className="group relative glass-card rounded-2xl p-8 smooth-transition hover:scale-[1.02] glow-border overflow-hidden md:col-span-2"
+            className="apple-card p-8 md:col-span-2 group"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-pink-500/20 opacity-50 group-hover:opacity-100 smooth-transition"></div>
-            <div className="relative z-10">
-              <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4 group-hover:scale-110 smooth-transition">
-                <Zap className="w-6 h-6 text-purple-400" />
+            <div className="flex items-start gap-4">
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center group-hover:scale-110 smooth-transition" style={{
+                background: 'linear-gradient(135deg, var(--apple-purple) 0%, #9933FF 100%)'
+              }}>
+                <Zap className="w-7 h-7 text-white" />
               </div>
-              <h2 className="text-2xl font-bold text-white mb-2">
-                Generate Questions
-              </h2>
-              <p className="text-slate-400 font-light">
-                Auto-generate practice questions from your topics using AI. Create comprehensive study materials instantly.
-              </p>
+              <div className="flex-1">
+                <h2 className="apple-subtitle mb-2">
+                  Generate Questions
+                </h2>
+                <p className="apple-body">
+                  Auto-generate practice questions from your topics using AI. Create comprehensive study materials instantly.
+                </p>
+              </div>
             </div>
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Link
             href="/topics"
-            className="group glass-card p-8 rounded-2xl smooth-transition hover:scale-[1.02] hover:glow-border"
+            className="apple-card p-6 group"
           >
-            <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-4 group-hover:scale-110 smooth-transition">
-              <BookOpen className="w-6 h-6 text-blue-400" />
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 smooth-transition" style={{
+              background: 'rgba(0, 122, 255, 0.1)'
+            }}>
+              <BookOpen className="w-6 h-6" style={{ color: 'var(--apple-blue)' }} />
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2">
+            <h3 className="font-semibold mb-2" style={{ color: 'var(--text-primary)', fontSize: '1.125rem' }}>
               Topics
             </h3>
-            <p className="text-sm text-slate-400 font-light leading-relaxed">
+            <p className="apple-caption">
               Organize and manage your study materials by topic
             </p>
           </Link>
 
           <Link
             href="/questions"
-            className="group glass-card p-8 rounded-2xl smooth-transition hover:scale-[1.02] hover:glow-border"
+            className="apple-card p-6 group"
           >
-            <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4 group-hover:scale-110 smooth-transition">
-              <FileQuestion className="w-6 h-6 text-purple-400" />
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 smooth-transition" style={{
+              background: 'rgba(175, 82, 222, 0.1)'
+            }}>
+              <FileQuestion className="w-6 h-6" style={{ color: 'var(--apple-purple)' }} />
             </div>
-            <h3 className="text-xl font-semibold text-white mb-2">
+            <h3 className="font-semibold mb-2" style={{ color: 'var(--text-primary)', fontSize: '1.125rem' }}>
               Questions
             </h3>
-            <p className="text-sm text-slate-400 font-light leading-relaxed">
+            <p className="apple-caption">
               Browse and manage all your practice questions
             </p>
           </Link>
 
-          <div className="glass-card p-8 rounded-2xl hover:scale-[1.02] smooth-transition group">
-            <div className="text-4xl font-bold mb-2 glow-text">
+          <div className="apple-card p-6 group">
+            <div className="text-4xl font-bold mb-3" style={{ color: 'var(--apple-green)' }}>
               {stats.totalReviews}
             </div>
-            <div className="text-sm text-slate-400 font-medium tracking-wide uppercase mb-3">Review Cards</div>
-            <p className="text-xs text-slate-500 leading-relaxed">
+            <div className="apple-caption uppercase tracking-wider mb-2">Review Cards</div>
+            <p className="apple-caption">
               Cards in your study queue
             </p>
-            <div className="mt-4 h-1 w-12 bg-gradient-to-r from-cyan-500 to-teal-500 rounded-full group-hover:w-full smooth-transition"></div>
+            <div className="mt-4 h-1 w-12 rounded-full group-hover:w-full smooth-transition" style={{
+              background: 'var(--apple-green)'
+            }}></div>
           </div>
         </div>
       </div>
