@@ -19,11 +19,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="antialiased min-h-screen flex flex-col">
         <ThemeProvider>
-          <ThemeToggle />
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
+          <>
+            <ThemeToggle />
+            <main className="flex-1">
+              {children}
+            </main>
+            <Footer />
+          </>
         </ThemeProvider>
       </body>
     </html>
