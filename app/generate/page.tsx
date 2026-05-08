@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { storage } from '@/lib/storage';
 import { Topic, Question, ReviewCard } from '@/lib/types';
 import { generateId } from '@/lib/utils';
+import { generateBoardExamQuestions } from '@/lib/board-exam-questions';
 
 export default function GeneratePage() {
   const [topics, setTopics] = useState<Topic[]>([]);
@@ -26,59 +27,25 @@ export default function GeneratePage() {
     const topic = topics.find(t => t.id === selectedTopic);
     if (!topic) return;
 
-    const sampleQuestions: Question[] = [];
-    const questionTemplates = [
-      {
-        question: `What is the primary purpose of ${topic.name}?`,
-        answer: `To understand and apply ${topic.name} concepts`,
-        type: 'short-answer' as const,
-      },
-      {
-        question: `Which of the following best describes ${topic.name}?`,
-        answer: `A fundamental concept in networking`,
-        type: 'multiple-choice' as const,
-        options: [
-          'A fundamental concept in networking',
-          'An outdated technology',
-          'A programming language',
-          'A hardware component',
-        ],
-      },
-      {
-        question: `${topic.name} is essential for network communication. True or False?`,
-        answer: 'True',
-        type: 'true-false' as const,
-        options: ['True', 'False'],
-      },
-      {
-        question: `Explain the key benefits of understanding ${topic.name}`,
-        answer: `Better network design, troubleshooting, and optimization`,
-        type: 'short-answer' as const,
-      },
-      {
-        question: `What are the main components of ${topic.name}?`,
-        answer: `Various protocols, devices, and configurations`,
-        type: 'short-answer' as const,
-      },
-    ];
-
-    for (let i = 0; i < Math.min(count, questionTemplates.length); i++) {
-      const template = questionTemplates[i];
-      const newQuestion: Question = {
+    setTimeout(() => {
+      const boardExamTemplates = generateBoardExamQuestions(topic.name, count, difficulty);
+      
+      const sampleQuestions: Question[] = boardExamTemplates.map(template => ({
         id: generateId(),
         topicId: selectedTopic,
         question: template.question,
         answer: template.answer,
         type: template.type,
-        difficulty: difficulty,
+        difficulty: template.difficulty,
         options: template.options,
+        correctAnswer: template.correctAnswer,
+        explanation: template.explanation,
         createdAt: new Date(),
-      };
-      sampleQuestions.push(newQuestion);
-    }
+      }));
 
-    setGenerated(sampleQuestions);
-    setGenerating(false);
+      setGenerated(sampleQuestions);
+      setGenerating(false);
+    }, 500);
   };
 
   const saveQuestions = () => {
