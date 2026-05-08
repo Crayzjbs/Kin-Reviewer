@@ -5,7 +5,14 @@ All quiz questions in this application now follow professional certification and
 
 ## Key Improvements Implemented
 
-### 1. **Sophisticated Distractor Design**
+### 1. **Five-Option Multiple Choice Format**
+All board exam level questions use the standard A-E format:
+- **Exactly 5 answer choices** for every multiple-choice question
+- Options labeled A, B, C, D, E
+- Consistent with professional certification exams
+- Prevents pattern recognition and guessing strategies
+
+### 2. **Sophisticated Distractor Design**
 All incorrect answer choices (distractors) are:
 - Technically plausible and credible
 - Similar in length and structure to the correct answer
@@ -13,7 +20,7 @@ All incorrect answer choices (distractors) are:
 - Professionally worded without obvious tells
 - Designed to test specific knowledge gaps
 
-### 2. **Question Complexity Levels**
+### 3. **Question Complexity Levels**
 
 #### Easy Questions
 - Require understanding of fundamental concepts
@@ -36,7 +43,7 @@ All incorrect answer choices (distractors) are:
 - Distractors that would work in different contexts
 - Require synthesis of multiple advanced concepts
 
-### 3. **Question Design Principles**
+### 4. **Question Design Principles**
 
 **Scenario-Based Context**
 - Real-world situations with specific requirements
@@ -57,7 +64,7 @@ All incorrect answer choices (distractors) are:
 - Similar technical depth across all choices
 - No length-based hints (longest/shortest = correct)
 
-### 4. **Content Quality Standards**
+### 5. **Content Quality Standards**
 
 **Question Stems**
 - Clear, unambiguous wording
@@ -73,7 +80,7 @@ All incorrect answer choices (distractors) are:
 - References to relevant concepts
 - Educational value beyond just the answer
 
-### 5. **Cognitive Levels Tested**
+### 6. **Cognitive Levels Tested**
 
 **Knowledge (Easy)**
 - Recall of facts and concepts
