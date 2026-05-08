@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, Suspense, useRef } from 'react';
 import { ArrowLeft, CheckCircle, XCircle, Lightbulb } from 'lucide-react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -10,6 +10,10 @@ import { getDueCards, calculateNextReview } from '@/lib/spaced-repetition';
 import { generateAnalogy } from '@/lib/analogy-generator';
 import { generateId } from '@/lib/utils';
 import { generateEnhancedExplanation, generateHumanAnalogy } from '@/lib/explanation-generator';
+import gsap from 'gsap';
+import confetti from 'canvas-confetti';
+import Swal from 'sweetalert2';
+import { Howl } from 'howler';
 
 function ReviewContent() {
   const searchParams = useSearchParams();
