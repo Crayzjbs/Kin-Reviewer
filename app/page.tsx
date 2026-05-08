@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { supabaseStorage } from '@/lib/supabase-storage';
-import { Sparkles, Brain, Zap, BookOpen, FileQuestion, Key, Lightbulb, Upload } from 'lucide-react';
+import { Sparkles, Brain, Zap, BookOpen, FileQuestion } from 'lucide-react';
 
 export default function Home() {
   const [stats, setStats] = useState({
@@ -115,15 +115,15 @@ export default function Home() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           <Link
             href="/topics"
-            className="group glass-card p-6 rounded-2xl smooth-transition hover:scale-[1.02] hover:glow-border"
+            className="group glass-card p-8 rounded-2xl smooth-transition hover:scale-[1.02] hover:glow-border"
           >
-            <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center mb-4 group-hover:scale-110 smooth-transition">
-              <BookOpen className="w-5 h-5 text-blue-400" />
+            <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center mb-4 group-hover:scale-110 smooth-transition">
+              <BookOpen className="w-6 h-6 text-blue-400" />
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">
+            <h3 className="text-xl font-semibold text-white mb-2">
               Topics
             </h3>
             <p className="text-sm text-slate-400 font-light leading-relaxed">
@@ -133,12 +133,12 @@ export default function Home() {
 
           <Link
             href="/questions"
-            className="group glass-card p-6 rounded-2xl smooth-transition hover:scale-[1.02] hover:glow-border"
+            className="group glass-card p-8 rounded-2xl smooth-transition hover:scale-[1.02] hover:glow-border"
           >
-            <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center mb-4 group-hover:scale-110 smooth-transition">
-              <FileQuestion className="w-5 h-5 text-purple-400" />
+            <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center mb-4 group-hover:scale-110 smooth-transition">
+              <FileQuestion className="w-6 h-6 text-purple-400" />
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">
+            <h3 className="text-xl font-semibold text-white mb-2">
               Questions
             </h3>
             <p className="text-sm text-slate-400 font-light leading-relaxed">
@@ -146,52 +146,16 @@ export default function Home() {
             </p>
           </Link>
 
-          <Link
-            href="/import"
-            className="group glass-card p-6 rounded-2xl smooth-transition hover:scale-[1.02] hover:glow-border"
-          >
-            <div className="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center mb-4 group-hover:scale-110 smooth-transition">
-              <Upload className="w-5 h-5 text-cyan-400" />
+          <div className="glass-card p-8 rounded-2xl hover:scale-[1.02] smooth-transition group">
+            <div className="text-4xl font-bold mb-2 glow-text">
+              {stats.totalReviews}
             </div>
-            <h3 className="text-lg font-semibold text-white mb-2">
-              Import
-            </h3>
-            <p className="text-sm text-slate-400 font-light leading-relaxed">
-              Load questions from JSON files quickly
+            <div className="text-sm text-slate-400 font-medium tracking-wide uppercase mb-3">Review Cards</div>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Cards in your study queue
             </p>
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <Link
-            href="/answer-keys"
-            className="group glass-card p-6 rounded-2xl smooth-transition hover:scale-[1.02] hover:glow-border"
-          >
-            <div className="w-10 h-10 rounded-lg bg-teal-500/10 flex items-center justify-center mb-4 group-hover:scale-110 smooth-transition">
-              <Key className="w-5 h-5 text-teal-400" />
-            </div>
-            <h3 className="text-lg font-semibold text-white mb-2">
-              Answer Keys
-            </h3>
-            <p className="text-sm text-slate-400 font-light leading-relaxed">
-              Store and access exam answer keys for reference
-            </p>
-          </Link>
-
-          <Link
-            href="/analogies"
-            className="group glass-card p-6 rounded-2xl smooth-transition hover:scale-[1.02] hover:glow-border"
-          >
-            <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center mb-4 group-hover:scale-110 smooth-transition">
-              <Lightbulb className="w-5 h-5 text-amber-400" />
-            </div>
-            <h3 className="text-lg font-semibold text-white mb-2">
-              Analogies
-            </h3>
-            <p className="text-sm text-slate-400 font-light leading-relaxed">
-              AI-generated learning insights and analogies
-            </p>
-          </Link>
+            <div className="mt-4 h-1 w-12 bg-gradient-to-r from-cyan-500 to-teal-500 rounded-full group-hover:w-full smooth-transition"></div>
+          </div>
         </div>
       </div>
     </div>
