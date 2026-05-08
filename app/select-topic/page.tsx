@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabaseStorage } from '@/lib/supabase-storage';
 import { Topic, Subject } from '@/lib/types';
 
-export default function SelectTopicPage() {
+function SelectTopicContent() {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [subject, setSubject] = useState<Subject | null>(null);
   const [loading, setLoading] = useState(true);
@@ -119,5 +119,24 @@ export default function SelectTopicPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SelectTopicPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen relative">
+        <div className="max-w-3xl mx-auto px-6 py-16">
+          <div className="text-center py-12">
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+              <p className="text-slate-400">Loading...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    }>
+      <SelectTopicContent />
+    </Suspense>
   );
 }
