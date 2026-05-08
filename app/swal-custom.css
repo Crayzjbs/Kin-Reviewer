@@ -1,0 +1,168 @@
+/* Apple-inspired SweetAlert2 Custom Styles */
+
+.swal2-popup {
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(40px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15) !important;
+  padding: 2rem !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif !important;
+}
+
+.swal2-title {
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  color: #1d1d1f !important;
+  margin-bottom: 0.5rem !important;
+  letter-spacing: -0.02em !important;
+}
+
+.swal2-html-container {
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  color: #6e6e73 !important;
+  line-height: 1.5 !important;
+  margin: 0 !important;
+}
+
+.swal2-icon {
+  border: none !important;
+  margin: 1.5rem auto 1rem !important;
+}
+
+.swal2-icon.swal2-success {
+  border-color: transparent !important;
+}
+
+.swal2-icon.swal2-success .swal2-success-ring {
+  border: 4px solid rgba(52, 199, 89, 0.2) !important;
+}
+
+.swal2-icon.swal2-success [class^='swal2-success-line'] {
+  background-color: #34c759 !important;
+}
+
+.swal2-icon.swal2-error {
+  border-color: transparent !important;
+}
+
+.swal2-icon.swal2-error .swal2-x-mark-line-left,
+.swal2-icon.swal2-error .swal2-x-mark-line-right {
+  background-color: #ff3b30 !important;
+}
+
+.swal2-confirm {
+  background: #007aff !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 0.75rem 2rem !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
+  box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3) !important;
+  transition: all 0.2s ease !important;
+}
+
+.swal2-confirm:hover {
+  background: #0051d5 !important;
+  transform: scale(1.02) !important;
+  box-shadow: 0 4px 12px rgba(0, 122, 255, 0.4) !important;
+}
+
+.swal2-confirm:active {
+  transform: scale(0.98) !important;
+}
+
+.swal2-cancel {
+  background: rgba(142, 142, 147, 0.12) !important;
+  color: #007aff !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 0.75rem 2rem !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
+  transition: all 0.2s ease !important;
+}
+
+.swal2-cancel:hover {
+  background: rgba(142, 142, 147, 0.18) !important;
+}
+
+.swal2-timer-progress-bar {
+  background: #007aff !important;
+  height: 3px !important;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .swal2-popup {
+    background: rgba(28, 28, 30, 0.72) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4) !important;
+  }
+
+  .swal2-title {
+    color: #f5f5f7 !important;
+  }
+
+  .swal2-html-container {
+    color: #a1a1a6 !important;
+  }
+
+  .swal2-cancel {
+    background: rgba(142, 142, 147, 0.24) !important;
+    color: #0a84ff !important;
+  }
+
+  .swal2-cancel:hover {
+    background: rgba(142, 142, 147, 0.32) !important;
+  }
+}
+
+/* Success specific styling */
+.swal2-popup.swal2-success-popup {
+  background: rgba(52, 199, 89, 0.08) !important;
+  backdrop-filter: blur(40px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(180%) !important;
+}
+
+/* Error specific styling */
+.swal2-popup.swal2-error-popup {
+  background: rgba(255, 59, 48, 0.08) !important;
+  backdrop-filter: blur(40px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(180%) !important;
+}
+
+/* Animation */
+.swal2-show {
+  animation: swal2-show 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}
+
+.swal2-hide {
+  animation: swal2-hide 0.2s cubic-bezier(0.55, 0.055, 0.675, 0.19) !important;
+}
+
+@keyframes swal2-show {
+  0% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes swal2-hide {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+}

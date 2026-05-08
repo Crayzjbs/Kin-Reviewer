@@ -218,12 +218,12 @@ function ReviewContent() {
       
       Swal.fire({
         icon: 'success',
-        title: 'Correct! 🎉',
+        title: 'Correct!',
         timer: 1500,
         showConfirmButton: false,
-        background: '#ffffff',
-        color: '#1A1A2E',
-        iconColor: '#22C55E'
+        customClass: {
+          popup: 'swal2-success-popup'
+        }
       });
     } else {
       setIncorrectCount(incorrectCount + 1);
@@ -232,11 +232,12 @@ function ReviewContent() {
       
       Swal.fire({
         icon: 'error',
-        title: 'Not quite!',
-        text: `Correct answer: ${correctAnswer}`,
-        background: '#ffffff',
-        color: '#1A1A2E',
-        confirmButtonColor: '#6C63FF'
+        title: 'Not quite',
+        html: `<div style="margin-top: 0.5rem; font-size: 0.95rem;">Correct answer: <strong>${correctAnswer}</strong></div>`,
+        confirmButtonText: 'Continue',
+        customClass: {
+          popup: 'swal2-error-popup'
+        }
       });
     }
 
@@ -303,18 +304,19 @@ function ReviewContent() {
       setCurrentIndex(currentIndex + 1);
     } else {
       Swal.fire({
-        title: '🎊 Quiz Complete!',
+        title: 'Quiz Complete',
         html: `
-          <div class="text-lg">
-            <p class="mb-2">Final Score: <strong>${scorePercentage}%</strong></p>
-            <p class="text-green-600">✓ Correct: ${correctCount}</p>
-            <p class="text-red-600">✗ Incorrect: ${incorrectCount}</p>
+          <div style="margin-top: 1rem; line-height: 1.8;">
+            <div style="font-size: 2.5rem; font-weight: 600; margin-bottom: 1rem; color: #1d1d1f;">${scorePercentage}%</div>
+            <div style="font-size: 0.95rem; color: #6e6e73;">
+              <div style="margin-bottom: 0.5rem;"><span style="color: #34c759;">●</span> ${correctCount} correct</div>
+              <div><span style="color: #ff3b30;">●</span> ${incorrectCount} incorrect</div>
+            </div>
           </div>
         `,
-        background: '#ffffff',
-        color: '#1A1A2E',
-        confirmButtonColor: '#6C63FF',
-        confirmButtonText: 'Review Again'
+        confirmButtonText: 'Review Again',
+        showCancelButton: true,
+        cancelButtonText: 'Done'
       }).then((result) => {
         if (result.isConfirmed) {
           const newDue = getDueCards(updatedCards);

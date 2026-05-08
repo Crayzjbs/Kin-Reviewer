@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import './globals.css';
+import './swal-custom.css';
 import StarfieldBackground from '@/components/StarfieldBackground';
 import Footer from '@/components/Footer';
 
